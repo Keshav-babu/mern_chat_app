@@ -29,6 +29,8 @@ import { Effect } from "react-notification-badge";
 import { ChatState } from "../../Context/ChatProvider";
 import { Flex, Spacer } from '@chakra-ui/react';
 import ProfileModal from "./ProfileModal";
+import ChatLoading from "../ChatLoading";
+import UserListItem from "../UserAvatar/UserListItem";
 
 function SideDrawer() {
   const [search, setSearch] = useState("");
@@ -122,8 +124,8 @@ function SideDrawer() {
 
   return (
     <>
-      <Flex
-        d="flex"
+      <Box
+        display="flex"
         justifyContent="space-between"
         alignItems="center"
         bg="white"
@@ -166,14 +168,14 @@ function SideDrawer() {
                 <MenuItem>My Profile</MenuItem>
                 </ProfileModal>
               <MenuDivider />
-              <MenuItem>Logout</MenuItem>
+              <MenuItem onClick={logoutHandler}>Logout</MenuItem>
             </MenuList>
           </Menu>
         </div>
-      </Flex>
+      </Box>
 
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
-        <DrawerOverlay />
+        <DrawerOverlay /> 
         <DrawerContent>
           <DrawerHeader borderBottomWidth="1px">Search Users</DrawerHeader>
           <DrawerBody>
@@ -186,6 +188,10 @@ function SideDrawer() {
               />
               <Button onClick={handleSearch}>Go</Button>
             </Box>
+            {loading ?(<ChatLoading />) : (
+              searchResult?.map(user=>(<UserListItem key={user._id} user={user} handleFunction={()=>accessChat(user._id)} />))
+            )}
+            {loadingChat && <Spinner ml="auto" d="flex" />}
           </DrawerBody>
         </DrawerContent>
       </Drawer>
